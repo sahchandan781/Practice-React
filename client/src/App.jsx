@@ -1,39 +1,64 @@
-import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+import React, { useState, useEffect } from 'react';
 
 function App() {
- const [count, setCount] = useState(0);
+  // State to store API data
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
- useEffect(() => {
-  console.log("component rendred successfully");
- }, [])
+  // Fetch data from API using useEffect
+  useEffect(() => {
+    // Define an async function to fetch data
+    const fetchData = async () => {
+      try {
+        // Fetch data from the API
+        const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+        
+        // Check if the response is OK (status 200-299)
+        if (!response.ok) {
+          throw new Error('Failed to fetch data');
+        }
 
- const btnClick = () => {
+        // Parse the JSON response
+        const result = await response.json();
+        
+        // Set the data to state
+        setData(result);
+        console.log(result)
+        setLoading(false);
+      } catch (err) {
+        setError(err.message);
+        setLoading(false);
+      }
+    };
 
-  // difference between a and b
+    // Call the async function
+    fetchData();
+  }, []); // Empty dependency array means this will only run once when the component mounts.
 
-  // this is a
-  setCount( count + 1)
-  setCount( count + 1)
+  // JSX to display the data
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
-  // this is b
-  setCount(count => count + 1)
-  setCount(count => count + 1)
-
-  // b will update counter by 2 and a only by 1
- }
-
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
 
   return (
     <div>
-      <p>You clicked me {count} times</p>
-       <button onClick={btnClick}>Click me!</button>
-       
+      <h1>Posts</h1>
+      <ul>
+        {data.slice(0, 10).map(post => (
+          <li key={post.id}>
+            <h2>{post.title}</h2>
+            <p>{post.body}</p>
+            
+          </li>
+        ))}
+      </ul>
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -11,7 +11,13 @@ function App() {
 
   return (
     <div>
-      
+        <ul>
+        {items.map((item,index) => (
+          <li key={index}>{item}</li>
+        ))}
+      </ul>
+      <button onClick={() => setItems([...items, "Mango"])}>Add Mango</button>
+      <button onClick={() => setItems([...items, "grapes"])}>Add grapes</button>
     </div>
   )
 }
